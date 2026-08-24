@@ -1,4 +1,6 @@
 import { CheckCircle2, AlertTriangle, Activity } from "lucide-react";
+import VoiceAnalysisAnimation from "./how-it-works/VoiceAnalysisAnimation";
+import SecurityVerdictAnimation from "./how-it-works/SecurityVerdictAnimation";
 
 export default function DetectionVisualization() {
   return (
@@ -21,6 +23,10 @@ export default function DetectionVisualization() {
             {/* Left: Audio Waveform */}
             <div className="flex-1 w-full bg-background-alt rounded-xl p-6 border border-border">
               <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">Voice Analysis</h3>
+              
+              {/* Added Voice Analysis Animation */}
+              <VoiceAnalysisAnimation />
+
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-xs text-muted mb-2">
@@ -69,8 +75,13 @@ export default function DetectionVisualization() {
             </div>
 
             {/* Right: Security Verdict Card */}
-            <div className="flex-1 w-full bg-background-alt rounded-xl p-6 border border-border">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">Security Verdict</h3>
+            <div className="flex-1 w-full bg-background-alt rounded-xl p-6 border border-border flex flex-col justify-between">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">Security Verdict</h3>
+                
+                {/* Added Security Verdict Animation */}
+                <SecurityVerdictAnimation />
+              </div>
               
               <div className="bg-background rounded-lg border border-danger/30 p-5 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full bg-danger" />

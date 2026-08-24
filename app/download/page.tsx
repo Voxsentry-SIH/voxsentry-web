@@ -1,52 +1,63 @@
-import { Download, ShieldCheck, Smartphone, Settings, Check, Info } from "lucide-react";
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
+import { Download, ShieldCheck, Smartphone, Settings, Check, AlertTriangle } from "lucide-react";
 
 export default function DownloadPage() {
   return (
-    <main className="flex min-h-screen flex-col bg-background">
+    <main className="flex min-h-screen flex-col overflow-hidden relative">
+      {/* Circuit/Grid Overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none fixed"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      />
+
       {/* Hero Section */}
-      <section className="mx-auto max-w-7xl px-6 py-20 text-center sm:py-28">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Get VoxSentry for Android
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-          Download the latest version of the VoxSentry app to protect yourself from synthetic voice scams in real-time.
-        </p>
-        <div className="mt-10 flex justify-center">
-          <Button variant="primary" className="gap-2">
-            <Download className="h-5 w-5" />
-            Download APK (v1.0.0)
-          </Button>
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 text-center sm:py-32">
+        <div className="reveal-up">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-6xl drop-shadow-md">
+            Get VoxSentry for Android
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
+            Download the latest version of the VoxSentry app to protect yourself from synthetic voice scams in real-time.
+          </p>
+          <div className="mt-10 flex justify-center">
+            <button className="btn-primary px-8 py-4 text-lg">
+              <Download className="h-5 w-5 mr-3" />
+              Download APK (v1.0.0)
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Setup Flow */}
-      <section className="bg-background-alt py-20">
+      <section className="relative z-10 py-16 border-y border-[rgba(34,211,238,0.1)] bg-[#050514]/50 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-semibold text-foreground">Getting Started</h2>
-            <p className="mt-4 text-muted">Four simple steps to secure your calls.</p>
+          <div className="reveal-up mb-12 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Getting Started</h2>
+            <p className="text-slate-400">Four simple steps to secure your calls.</p>
           </div>
           
-          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+          <div className="grid gap-6 md:grid-cols-4">
             {[
-              { title: "Download", desc: "Get the latest APK directly from our secure servers.", icon: Download },
-              { title: "Install", desc: "Open the downloaded file and install the application.", icon: Smartphone },
-              { title: "Permissions", desc: 'Grant the "Draw over other apps" permission for the warning overlay.', icon: Settings },
+              { title: "Download", desc: "Get the latest APK from our secure servers.", icon: Download },
+              { title: "Install", desc: "Open the downloaded file and install the app.", icon: Smartphone },
+              { title: "Permissions", desc: 'Grant "Draw over other apps" for the overlay.', icon: Settings },
               { title: "Protected", desc: "You are now protected against AI voice clones.", icon: ShieldCheck },
             ].map((step, idx) => {
               const Icon = step.icon;
               return (
-                <div key={idx} className="flex flex-1 flex-col items-center text-center">
-                  <div className="relative mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-light text-primary">
-                    <Icon className="h-8 w-8" />
-                    <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                      {idx + 1}
-                    </span>
+                <div 
+                  key={idx} 
+                  className="reveal-up glass-card flex flex-col items-center text-center p-8 rounded-2xl relative overflow-hidden transition-transform duration-300 hover:scale-105 hover:-translate-y-1"
+                >
+                  <div className="absolute top-4 right-4 text-slate-700 font-bold text-4xl opacity-20 pointer-events-none">
+                    0{idx + 1}
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">{step.title}</h3>
-                  <p className="mt-2 max-w-[200px] text-sm text-muted">{step.desc}</p>
+                  <div className="glow-badge h-16 w-16 mb-6">
+                    <Icon className="h-8 w-8 text-cyan-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
                 </div>
               );
             })}
@@ -55,19 +66,22 @@ export default function DownloadPage() {
       </section>
 
       {/* Screenshots */}
-      <section className="py-20">
+      <section className="relative z-10 py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="mb-12 text-center text-3xl font-semibold text-foreground">See it in action</h2>
+          <div className="reveal-up mb-16 text-center">
+            <h2 className="text-3xl font-bold text-white">See it in action</h2>
+          </div>
+          
           <div className="grid gap-8 sm:grid-cols-3">
             {[
               { label: "App Home Screen", src: "/images/home.png", alt: "VoxSentry Home Screen" },
               { label: "Live Call Overlay Warning", src: "/images/alert.png", alt: "Live call alert" },
               { label: "Permissions Setup", src: "/images/permissions.png", alt: "Permissions flow" },
             ].map((item, idx) => (
-              <div key={idx} className="group flex flex-col items-center">
-                <div className="relative flex h-[520px] w-full max-w-[260px] justify-center overflow-hidden rounded-[2.5rem] border-[6px] border-gray-800 bg-background shadow-2xl transition-all duration-500 ease-out group-hover:-translate-y-4 group-hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.4)] group-hover:border-primary/50">
-                  {/* Glow effect behind the image container */}
-                  <div className="absolute inset-0 -z-10 rounded-full bg-primary/0 blur-2xl transition-all duration-500 group-hover:bg-primary/20" />
+              <div key={idx} className="reveal-up group flex flex-col items-center">
+                <div className="glass-card relative flex h-[520px] w-full max-w-[260px] justify-center overflow-hidden rounded-[2.5rem] border-[6px] border-cyan-400/20 bg-[#111827] shadow-[0_0_30px_rgba(34,211,238,0.1)] transition-all duration-500 ease-out hover:border-cyan-400/60 hover:shadow-[0_0_40px_rgba(34,211,238,0.3)] hover:-translate-y-4">
+                  {/* Subtle inner glow matching phone styling */}
+                  <div className="absolute inset-0 -z-10 rounded-full bg-cyan-400/5 blur-2xl group-hover:bg-cyan-400/10 transition-all duration-500 transform-gpu will-change-transform" />
                   
                   <img
                     src={item.src}
@@ -75,7 +89,7 @@ export default function DownloadPage() {
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <span className="mt-8 font-medium text-foreground transition-colors duration-300 group-hover:text-primary">{item.label}</span>
+                <span className="mt-8 font-medium text-slate-400 transition-colors duration-300 group-hover:text-cyan-400">{item.label}</span>
               </div>
             ))}
           </div>
@@ -83,44 +97,52 @@ export default function DownloadPage() {
       </section>
 
       {/* Honesty Box */}
-      <section className="bg-background-alt py-20">
+      <section className="relative z-10 py-16">
         <div className="mx-auto max-w-3xl px-6">
-          <Card className="border-l-4 border-l-primary bg-background shadow-md">
-            <div className="flex items-start gap-4">
-              <div className="mt-1 rounded-full bg-primary-light p-2 text-primary shrink-0">
-                <Info className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-foreground">What this app does NOT do</h3>
-                <p className="mt-3 leading-relaxed text-muted">
-                  Due to strict Android privacy limitations, VoxSentry <strong>cannot record, save, or transmit your call audio</strong>. 
-                  The app processes the audio stream transiently in real-time exclusively for scam detection and discards it instantly. 
-                  Your privacy is fully preserved.
-                </p>
-              </div>
+          <div className="reveal-up rounded-2xl p-8 backdrop-blur-md bg-[rgba(30,20,10,0.6)] border border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:shadow-[0_0_40px_rgba(245,158,11,0.2)] transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start">
+            <div className="h-14 w-14 shrink-0 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+              <AlertTriangle className="h-7 w-7" />
             </div>
-          </Card>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-3">What this app does NOT do</h3>
+              <p className="leading-relaxed text-slate-300">
+                Due to strict Android privacy limitations, VoxSentry <strong className="text-white font-semibold">cannot record, save, or transmit your call audio</strong>. 
+                The app processes the audio stream transiently in real-time exclusively for scam detection and discards it instantly. 
+                Your privacy is fully preserved.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* System Requirements */}
-      <section className="py-20 pb-32">
+      <section className="relative z-10 py-16 pb-32">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="mb-8 text-2xl font-semibold text-foreground">System Requirements</h2>
-          <ul className="inline-block space-y-4 text-left text-muted">
-            <li className="flex items-center gap-3">
-              <Check className="h-5 w-5 text-safe" />
-              <span>Android 10.0 or higher</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="h-5 w-5 text-safe" />
-              <span>4GB RAM minimum (8GB recommended for fastest inference)</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Check className="h-5 w-5 text-safe" />
-              <span>&quot;Draw over other apps&quot; permission enabled</span>
-            </li>
-          </ul>
+          <div className="reveal-up">
+            <h2 className="mb-8 text-2xl font-bold text-white">System Requirements</h2>
+            <div className="glass-card inline-block p-8 rounded-2xl text-left border-cyan-400/20">
+              <ul className="space-y-5 text-slate-400">
+                <li className="flex items-center gap-4">
+                  <div className="glow-badge h-8 w-8 shrink-0">
+                    <Check className="h-4 w-4 text-cyan-400" />
+                  </div>
+                  <span className="font-medium text-slate-200">Android 10.0 or higher</span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <div className="glow-badge h-8 w-8 shrink-0">
+                    <Check className="h-4 w-4 text-cyan-400" />
+                  </div>
+                  <span className="font-medium text-slate-200">4GB RAM minimum <span className="text-slate-500">(8GB recommended for fastest inference)</span></span>
+                </li>
+                <li className="flex items-center gap-4">
+                  <div className="glow-badge h-8 w-8 shrink-0">
+                    <Check className="h-4 w-4 text-cyan-400" />
+                  </div>
+                  <span className="font-medium text-slate-200">&quot;Draw over other apps&quot; permission enabled</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
     </main>

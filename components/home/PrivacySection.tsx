@@ -2,7 +2,7 @@ import { Shield, Lock, Mic } from "lucide-react";
 
 export default function PrivacySection() {
   return (
-    <section className="bg-background py-20 md:py-32 border-t border-border">
+    <section className="bg-transparent py-20 md:py-32 border-t border-[rgba(34,211,238,0.1)] relative z-10">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           

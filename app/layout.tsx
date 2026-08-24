@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import { PerformanceProvider } from "@/providers/PerformanceProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,11 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col font-sans">
-        <Navbar />
-        {children}
-        <Footer />
+        <PerformanceProvider>
+          <ScrollReveal />
+          <Navbar />
+          {children}
+          <Footer />
+        </PerformanceProvider>
       </body>
     </html>
   );

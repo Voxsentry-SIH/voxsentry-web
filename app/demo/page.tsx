@@ -1,77 +1,27 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import PhoneCallScreen from "@/components/demo/PhoneCallScreen";
-import JudgeControlPanel from "@/components/demo/JudgeControlPanel";
-import VerdictCard from "@/components/demo/VerdictCard";
-import { mockVerdicts } from "@/lib/mockData";
+import DemoEnvironment from "@/components/demo/DemoEnvironment";
 
 export default function DemoPage() {
-  const [selectedId, setSelectedId] = useState<string>("1");
-  const [status, setStatus] = useState<"idle" | "analyzing" | "complete">("idle");
-  const [callTime, setCallTime] = useState(0);
-
-  const selectedVerdict = mockVerdicts.find((v) => v.id === selectedId) || mockVerdicts[0];
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (status !== "idle") {
-      interval = setInterval(() => {
-        setCallTime((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [status]);
-
-  const handlePlay = () => {
-    setStatus("analyzing");
-    setCallTime(0);
-
-    // Simulate analysis delay (latency demo)
-    setTimeout(() => {
-      setStatus("complete");
-    }, 2500);
-  };
-
   return (
-    <main className="flex min-h-screen flex-col bg-background-alt pb-20 pt-16 sm:pt-24">
-      <div className="mx-auto w-full max-w-7xl px-6">
-        <div className="mb-12">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+    <main className="flex min-h-screen flex-col bg-transparent relative overflow-hidden pb-20 pt-16 sm:pt-24">
+      {/* Circuit/Grid Overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none fixed"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      />
+      
+      <div className="mx-auto w-full max-w-7xl px-6 relative z-10">
+        <div className="mb-12 reveal-up">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl drop-shadow-md">
             Live Demo Environment
           </h1>
-          <p className="mt-3 max-w-2xl text-muted">
+          <p className="mt-3 max-w-2xl text-slate-400">
             Experience how VoxSentry analyzes incoming audio in real-time. Select a scenario and press play to simulate a phone call.
           </p>
         </div>
 
-        <div className="grid items-start gap-8 lg:grid-cols-12">
-          {/* Left Column: The Simulated Phone */}
-          <div className="flex justify-center lg:col-span-4">
-            <PhoneCallScreen
-              isPlaying={status !== "idle"}
-              callerName={selectedVerdict.scenarioName}
-              callTimeSeconds={callTime}
-            />
-          </div>
-
-          {/* Right Column: Controls and Verdict */}
-          <div className="space-y-6 lg:col-span-8">
-            <JudgeControlPanel
-              verdicts={mockVerdicts}
-              selectedId={selectedId}
-              onSelect={(id) => {
-                setSelectedId(id);
-                setStatus("idle");
-                setCallTime(0);
-              }}
-              onPlay={handlePlay}
-              isPlaying={status === "analyzing" || status === "complete"}
-            />
-
-            <VerdictCard status={status} verdict={selectedVerdict} />
-          </div>
-        </div>
+        <DemoEnvironment />
       </div>
     </main>
   );

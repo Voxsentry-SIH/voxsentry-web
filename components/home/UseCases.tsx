@@ -1,5 +1,4 @@
 import { Users, Briefcase, PhoneIncoming, UserMinus } from "lucide-react";
-import Card from "@/components/ui/Card";
 
 export default function UseCases() {
   const cases = [
@@ -26,13 +25,13 @@ export default function UseCases() {
   ];
 
   return (
-    <section className="bg-background py-20 md:py-32">
+    <section className="bg-transparent py-20 md:py-32 relative z-10">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 md:text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
+        <div className="reveal-up mb-16 md:text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-4 drop-shadow-md">
             Built for the moments when trust matters
           </h2>
-          <p className="text-lg text-muted">
+          <p className="text-lg text-slate-400">
             Voice cloning changes how scams operate. VoxSentry is designed to detect the subtle anomalies that humans miss.
           </p>
         </div>
@@ -41,17 +40,17 @@ export default function UseCases() {
           {cases.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <Card key={idx} className="flex flex-col items-start bg-background-alt border-none shadow-none">
-                <div className="mb-4 text-primary">
-                  <Icon className="h-6 w-6" />
+              <div key={idx} className="reveal-up glass-card flex flex-col items-start p-6 rounded-2xl">
+                <div className="mb-6 glow-badge h-12 w-12">
+                  <Icon className="h-6 w-6 text-cyan-400" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
+                <h3 className="mb-2 text-lg font-bold text-white">
                   {item.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-muted">
+                <p className="text-sm leading-relaxed text-slate-400">
                   {item.description}
                 </p>
-              </Card>
+              </div>
             );
           })}
         </div>

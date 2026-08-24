@@ -4,8 +4,6 @@ import VideoColumn from "@/components/home/VideoColumn";
 import FeatureGrid from "@/components/home/FeatureGrid";
 import DetectionVisualization from "@/components/home/DetectionVisualization";
 import UseCases from "@/components/home/UseCases";
-import StatsStrip from "@/components/home/StatsStrip";
-import PrivacySection from "@/components/home/PrivacySection";
 import TeamSection from "@/components/home/TeamSection";
 import FinalCTA from "@/components/home/FinalCTA";
 
@@ -18,8 +16,6 @@ export default function HomePage() {
       <FeatureGrid />
       <DetectionVisualization />
       <UseCases />
-      <StatsStrip />
-      <PrivacySection />
       <TeamSection />
       <FinalCTA />
     </main>

@@ -15,16 +15,16 @@ export default function FinalCTA() {
         
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/demo" className="w-full sm:w-auto">
-            <Button variant="primary" className="w-full flex items-center justify-center gap-2 h-14 px-8 text-base">
+            <button className="btn-primary w-full flex items-center justify-center gap-2 h-14 px-8 text-base">
               <Play className="h-4 w-4" />
               Try Live Demo
-            </Button>
+            </button>
           </Link>
           <Link href="/train-voice" className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full flex items-center justify-center gap-2 h-14 px-8 text-base bg-background">
+            <button className="btn-outline w-full flex items-center justify-center gap-2 h-14 px-8 text-base">
               <Mic className="h-4 w-4" />
               Train Your Voice
-            </Button>
+            </button>
           </Link>
         </div>
       </div>

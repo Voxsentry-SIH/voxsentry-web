@@ -2,16 +2,16 @@
 
 ## Color Palette
 ```
-Primary (indigo):     #4F46E5   — buttons, links, key accents, 3D scene elements
-Primary dark:         #4338CA   — hover states, headings
-Primary light/tint:   #EEF2FF   — subtle backgrounds, hover fills, badges
-Danger (cloned/alert): #EF4444  — RESERVED strictly for actual "cloned voice" verdicts, never decorative
-Safe/verified:         #10B981  — RESERVED strictly for "verified real voice" verdicts
-Background:            #FFFFFF / #FAFAFA
-Text primary:           #111827 (near-black charcoal, never pure #000)
-Text secondary/muted:   #6B7280
-Border/divider:         #E5E7EB
-Dark-theme UI (used only inside the simulated phone screen): #111827 background, white text
+Background base:       #0A0A1F → #1E1042 (diagonal gradient, navy to deep purple)
+Glow/accent cyan:       #22D3EE
+Glow/accent purple:     #A855F7
+Gradient CTA:           linear-gradient(135deg, #7C3AED, #22D3EE)
+Card background:        rgba(15, 15, 35, 0.6)  with backdrop-blur
+Card border (glow):     rgba(34, 211, 238, 0.4), box-shadow glow on hover
+Text primary:           #FFFFFF
+Text secondary:         #9CA3AF
+Danger/risk:            #EF4444 
+(used only for "High Risk" style verdicts, per existing RULES.md convention)
 ```
 
 ## Typography
