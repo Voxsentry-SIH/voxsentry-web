@@ -1,0 +1,101 @@
+import { CheckCircle2, AlertTriangle, Activity } from "lucide-react";
+
+export default function DetectionVisualization() {
+  return (
+    <section className="bg-background-alt py-20 md:py-32">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
+            From audio signal to security decision
+          </h2>
+          <p className="text-lg text-muted">
+            Our detection engine turns raw audio into actionable security intelligence.
+          </p>
+        </div>
+
+        {/* Large Dashboard-style Visual */}
+        <div className="rounded-2xl border border-border bg-background p-6 md:p-10 shadow-xl overflow-hidden relative">
+          
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
+            
+            {/* Left: Audio Waveform */}
+            <div className="flex-1 w-full bg-background-alt rounded-xl p-6 border border-border">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">Voice Analysis</h3>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-xs text-muted mb-2">
+                    <span>Audio signal</span>
+                    <span className="text-primary font-mono">16kHz</span>
+                  </div>
+                  <div className="flex items-center gap-[2px] h-8">
+                    {Array.from({ length: 40 }).map((_, i) => (
+                      <div key={i} className="flex-1 bg-primary/40 rounded-full" style={{ height: `${20 + Math.random() * 80}%` }} />
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex justify-between text-xs text-muted mb-2">
+                    <span>Spectral analysis</span>
+                    <span className="text-primary font-mono">Processing</span>
+                  </div>
+                  <div className="h-4 rounded-md bg-gradient-to-r from-primary/20 via-primary to-primary/20 overflow-hidden relative">
+                     <div className="absolute inset-0 bg-white/20 w-1/3 blur-sm animate-pulse" style={{ animationDuration: '2s' }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs text-muted mb-2">
+                    <span>Voice characteristics</span>
+                    <span className="text-danger font-mono">Anomalous</span>
+                  </div>
+                  <div className="flex gap-1 h-3">
+                    <div className="w-1/3 bg-border rounded-full" />
+                    <div className="w-1/2 bg-danger/50 rounded-full" />
+                    <div className="w-1/6 bg-border rounded-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle: Arrow/AI indicator */}
+            <div className="flex lg:flex-col items-center justify-center gap-2">
+               <div className="hidden lg:block w-px h-12 bg-gradient-to-b from-transparent to-primary" />
+               <div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(79,70,229,0.3)]">
+                  <Activity className="h-5 w-5" />
+               </div>
+               <div className="hidden lg:block w-px h-12 bg-gradient-to-t from-transparent to-primary" />
+               <div className="lg:hidden h-px w-12 bg-gradient-to-r from-transparent via-primary to-transparent" />
+            </div>
+
+            {/* Right: Security Verdict Card */}
+            <div className="flex-1 w-full bg-background-alt rounded-xl p-6 border border-border">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">Security Verdict</h3>
+              
+              <div className="bg-background rounded-lg border border-danger/30 p-5 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-danger" />
+                
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-full bg-danger/10 flex items-center justify-center text-danger shrink-0">
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-danger">Suspicious synthetic voice</div>
+                    <div className="text-xs text-muted">Match confidence: <span className="font-mono text-danger font-bold">94.2%</span></div>
+                  </div>
+                </div>
+                
+                <div className="text-sm text-muted bg-danger/5 rounded p-3">
+                  <span className="font-medium text-foreground block mb-1">Risk detected</span>
+                  Review the conversation before sharing sensitive information.
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+  );
+}

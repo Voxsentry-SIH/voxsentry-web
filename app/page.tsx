@@ -1,14 +1,27 @@
+import Hero from "@/components/home/Hero";
+import HowItWorks from "@/components/home/HowItWorks";
+import VideoColumn from "@/components/home/VideoColumn";
+import FeatureGrid from "@/components/home/FeatureGrid";
+import DetectionVisualization from "@/components/home/DetectionVisualization";
+import UseCases from "@/components/home/UseCases";
+import StatsStrip from "@/components/home/StatsStrip";
+import PrivacySection from "@/components/home/PrivacySection";
+import TeamSection from "@/components/home/TeamSection";
+import FinalCTA from "@/components/home/FinalCTA";
+
 export default function HomePage() {
   return (
-    <main className="flex flex-1 items-center justify-center py-20">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Home
-        </h1>
-        <p className="mt-4 text-lg text-muted">
-          VoxSentry — AI-powered voice-clone detection
-        </p>
-      </div>
+    <main className="flex min-h-screen flex-col overflow-x-hidden">
+      <Hero />
+      <HowItWorks />
+      <VideoColumn />
+      <FeatureGrid />
+      <DetectionVisualization />
+      <UseCases />
+      <StatsStrip />
+      <PrivacySection />
+      <TeamSection />
+      <FinalCTA />
     </main>
   );
 }

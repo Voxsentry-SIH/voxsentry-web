@@ -19,26 +19,21 @@ const companyLinks: FooterLink[] = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background-alt">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Column */}
-          <div className="col-span-1 lg:col-span-2">
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-12 md:py-16 lg:py-20">
+        <div className="grid gap-12 md:grid-cols-4 lg:grid-cols-5">
+          <div className="md:col-span-2 lg:col-span-3">
             <Link
               href="/"
-              className="mb-4 flex items-center gap-2 text-lg font-bold tracking-tight text-foreground"
-              aria-label="VoxSentry Home"
+              className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground transition-opacity hover:opacity-80 w-fit"
             >
-              <Shield className="h-5 w-5 text-primary" />
+              <Shield className="h-6 w-6 text-primary" />
               VoxSentry
             </Link>
-            <p className="max-w-sm text-sm leading-relaxed text-muted">
-              AI-powered real-time voice-clone detection. Protecting your calls
-              from synthetic voice scams with calm confidence.
+            <p className="mt-4 max-w-md text-sm text-muted leading-relaxed">
+              AI-powered voice security designed to help detect synthetic and cloned voices during calls.
             </p>
           </div>
-
-          {/* Product Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
               Product

@@ -59,3 +59,11 @@ export const mockVerdicts: MockVerdict[] = [
     audioFile: "/audio-samples/ceo-impersonation.wav",
   },
 ];
+
+export const mockTrainingPrompts: string[] = [
+  "The quick brown fox jumps over the lazy dog.",
+  "I am recording my voice to secure my personal calls.",
+  "VoxSentry analyzes the unique spectral features of my speech.",
+  "Artificial intelligence cannot perfectly replicate these nuances.",
+  "This profile will be stored securely on my device."
+];
