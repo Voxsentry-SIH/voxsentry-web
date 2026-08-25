@@ -1,8 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
-import { MockVerdict } from "@/lib/mockData";
+import { CheckCircle2, AlertTriangle, Loader2, Info } from "lucide-react";
+import { MockVerdict, mockCallContexts, calculateRiskTier, RiskTier } from "@/lib/mockData";
 import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import gsap from "gsap";
@@ -12,34 +12,60 @@ const SpectrogramView = dynamic(() => import("./SpectrogramView"), {
   loading: () => <div className="h-40 w-full rounded-xl border border-white/5 bg-[#050510]" />
 });
 
+const tierColors: Record<RiskTier, string> = {
+  Low: "#10B981",
+  Medium: "#F59E0B",
+  High: "#F97316",
+  Critical: "#EF4444",
+};
+
 export default function VerdictCard({
   status,
   verdict,
+  contextId = "routine",
 }: {
   status: "idle" | "analyzing" | "complete";
   verdict: MockVerdict | null;
+  contextId?: string;
 }) {
-  const [displayConfidence, setDisplayConfidence] = useState(0);
+  const [displayScore, setDisplayScore] = useState(0);
   const loadingRingRef = useRef<HTMLDivElement>(null);
+  const gaugeRef = useRef<SVGCircleElement>(null);
+
+  const context = mockCallContexts.find(c => c.id === contextId) || mockCallContexts[0];
+  const rawRiskScore = verdict ? (verdict.label === "cloned" ? verdict.confidence : 100 - verdict.confidence) : 0;
+  const riskTier = calculateRiskTier(rawRiskScore, context);
+  const tierColor = tierColors[riskTier];
 
   useEffect(() => {
     if (status === "complete" && verdict) {
       let current = 0;
-      const target = verdict.confidence;
+      const target = rawRiskScore;
       const interval = setInterval(() => {
-        current += target / 20; // 20 steps
+        current += target / 20;
         if (current >= target) {
-          setDisplayConfidence(target);
+          setDisplayScore(target);
           clearInterval(interval);
         } else {
-          setDisplayConfidence(current);
+          setDisplayScore(current);
         }
       }, 30);
+
+      if (gaugeRef.current) {
+        // Animate the gauge stroke using GSAP
+        const circleLength = 2 * Math.PI * 36; // r=36
+        const offset = circleLength - (target / 100) * circleLength;
+        gsap.fromTo(gaugeRef.current, 
+          { strokeDashoffset: circleLength },
+          { strokeDashoffset: offset, duration: 1.5, ease: "power2.out", delay: 0.2 }
+        );
+      }
+
       return () => clearInterval(interval);
     } else {
-      setDisplayConfidence(0);
+      setDisplayScore(0);
     }
-  }, [status, verdict]);
+  }, [status, verdict, rawRiskScore]);
 
   useEffect(() => {
     if (status === "analyzing" && loadingRingRef.current) {
@@ -58,17 +84,16 @@ export default function VerdictCard({
   }, [status]);
 
   return (
-    <div className="glass-card relative flex min-h-[400px] flex-col overflow-hidden rounded-2xl p-8 shadow-xl">
+    <div className="glass-card relative flex min-h-[460px] flex-col overflow-hidden rounded-2xl p-8 shadow-xl">
       {/* Background verdict glow when complete */}
       <AnimatePresence>
         {status === "complete" && verdict && (
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
+            animate={{ opacity: 0.1 }}
             exit={{ opacity: 0 }}
-            className={`absolute inset-0 pointer-events-none blur-3xl ${
-              verdict.label === "real" ? "bg-[#10B981]" : "bg-[#EF4444]"
-            }`}
+            className="absolute inset-0 pointer-events-none blur-3xl"
+            style={{ backgroundColor: tierColor }}
           />
         )}
       </AnimatePresence>
@@ -104,7 +129,7 @@ export default function VerdictCard({
                 <Loader2 className="h-10 w-10 animate-spin text-cyan-400" />
               </div>
               <p className="animate-pulse font-bold text-cyan-400">Analyzing audio stream...</p>
-              <p className="mt-2 text-sm text-slate-400">Extracting spectral features</p>
+              <p className="mt-2 text-sm text-slate-400">Extracting spectral features & evaluating risk</p>
             </motion.div>
           )}
 
@@ -116,43 +141,77 @@ export default function VerdictCard({
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
               className="flex h-full flex-col"
             >
-              <div className="mb-6 flex justify-center">
-                <div
-                  className={`flex items-center gap-2 rounded-full px-6 py-3 font-bold border shadow-[0_0_20px_rgba(0,0,0,0.2)] ${
-                    verdict.label === "real"
-                      ? "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/30"
-                      : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/30"
-                  }`}
-                >
-                  {verdict.label === "real" ? (
-                    <CheckCircle2 className="h-6 w-6" />
-                  ) : (
-                    <AlertTriangle className="h-6 w-6" />
-                  )}
-                  <span className="text-lg">{verdict.label === "real" ? "Verified Human Voice" : "Likely Cloned Voice"}</span>
+              <div className="mb-6 flex flex-col items-center gap-6 md:flex-row md:items-stretch">
+                {/* Gauge Section */}
+                <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-[#050514]/50 border border-white/5 p-6 shadow-inner relative">
+                  <div className="relative h-24 w-24 mb-4">
+                    <svg className="h-full w-full -rotate-90 transform" viewBox="0 0 80 80">
+                      <circle
+                        cx="40"
+                        cy="40"
+                        r="36"
+                        stroke="rgba(255,255,255,0.05)"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <circle
+                        ref={gaugeRef}
+                        cx="40"
+                        cy="40"
+                        r="36"
+                        stroke={tierColor}
+                        strokeWidth="8"
+                        fill="none"
+                        strokeLinecap="round"
+                        style={{
+                          strokeDasharray: 2 * Math.PI * 36,
+                          strokeDashoffset: 2 * Math.PI * 36,
+                        }}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-2xl font-black text-white">{displayScore.toFixed(0)}</span>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">Risk Score</p>
+                    <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold border" style={{ backgroundColor: `${tierColor}1A`, color: tierColor, borderColor: `${tierColor}33` }}>
+                      {riskTier} Risk
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details Section */}
+                <div className="flex flex-1 flex-col justify-center rounded-xl bg-[#050514]/50 border border-white/5 p-6 shadow-inner space-y-4">
+                  <div>
+                    <p className="text-sm font-medium text-slate-400 mb-1">Primary Detection</p>
+                    <div className="flex items-center gap-2 text-white font-semibold">
+                      {verdict.label === "real" ? <CheckCircle2 className="h-5 w-5 text-[#10B981]" /> : <AlertTriangle className="h-5 w-5 text-[#EF4444]" />}
+                      {verdict.label === "real" ? "Verified Human Voice" : "Likely Cloned Voice"}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium text-slate-400 mb-1">Latency</p>
+                    <p className="text-white font-semibold flex items-baseline">
+                      184<span className="text-xs text-slate-500 ml-1">ms</span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="mb-8 grid grid-cols-2 gap-6">
-                <div className="rounded-xl bg-[#050514]/50 border border-white/5 p-5 text-center shadow-inner">
-                  <p className="mb-1 text-sm font-medium text-slate-400">Confidence</p>
-                  <p
-                    className={`text-4xl font-extrabold ${
-                      verdict.label === "real" ? "text-[#10B981]" : "text-[#EF4444]"
-                    }`}
-                  >
-                    {displayConfidence.toFixed(1)}%
-                  </p>
-                </div>
-                <div className="rounded-xl bg-[#050514]/50 border border-white/5 p-5 text-center shadow-inner">
-                  <p className="mb-1 text-sm font-medium text-slate-400">Latency</p>
-                  <p className="text-4xl font-extrabold text-white">
-                    184<span className="text-xl text-slate-500 font-medium ml-1">ms</span>
+              {/* Context Note */}
+              <div className="mb-6 rounded-lg bg-[#050514]/80 border border-white/10 p-4 text-sm flex gap-3 items-start">
+                <Info className="h-5 w-5 shrink-0 text-cyan-400" />
+                <div>
+                  <p className="font-semibold text-slate-200">Why this tier?</p>
+                  <p className="text-slate-400 mt-1">
+                    A risk score of {displayScore.toFixed(1)} evaluates to <strong style={{ color: tierColor }}>{riskTier}</strong> because this call is flagged as a <strong>{context.name}</strong>.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-auto pointer-events-none opacity-80">
+              <div className="mt-auto pointer-events-none opacity-80 h-24">
                 <SpectrogramView isAnalyzing={false} isComplete={true} />
               </div>
             </motion.div>
@@ -161,7 +220,7 @@ export default function VerdictCard({
       </div>
 
       {status !== "complete" && (
-        <div className="pointer-events-none mt-auto opacity-30 grayscale relative z-0">
+        <div className="pointer-events-none mt-auto opacity-30 grayscale relative z-0 h-24">
           <SpectrogramView isAnalyzing={status === "analyzing"} isComplete={false} />
         </div>
       )}

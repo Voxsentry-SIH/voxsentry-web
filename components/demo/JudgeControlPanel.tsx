@@ -3,16 +3,22 @@
 import { Play, UploadCloud } from "lucide-react";
 import { MockVerdict } from "@/lib/mockData";
 
+import { mockCallContexts } from "@/lib/mockData";
+
 export default function JudgeControlPanel({
   verdicts,
   selectedId,
+  selectedContextId,
   onSelect,
+  onSelectContext,
   onPlay,
   isPlaying,
 }: {
   verdicts: MockVerdict[];
   selectedId: string;
+  selectedContextId: string;
   onSelect: (id: string) => void;
+  onSelectContext: (id: string) => void;
   onPlay: () => void;
   isPlaying: boolean;
 }) {
@@ -21,7 +27,7 @@ export default function JudgeControlPanel({
       <div>
         <h3 className="mb-6 text-xl font-bold text-white tracking-tight">Judge Control Panel</h3>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-300">
               Select Audio Clip Scenario
@@ -40,6 +46,29 @@ export default function JudgeControlPanel({
                 ))}
               </select>
               {/* Custom select arrow */}
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-cyan-400 transition-colors">
+                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-300">
+              Call Context (Risk Thresholds)
+            </label>
+            <div className="relative group">
+              <select
+                className="w-full appearance-none rounded-xl border border-white/10 bg-[#050514]/60 px-4 py-3.5 text-sm text-white focus:border-cyan-400 focus:outline-none focus:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                value={selectedContextId}
+                onChange={(e) => onSelectContext(e.target.value)}
+                disabled={isPlaying}
+              >
+                {mockCallContexts.map((ctx) => (
+                  <option key={ctx.id} value={ctx.id} className="bg-[#111827]">
+                    {ctx.name}
+                  </option>
+                ))}
+              </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 group-focus-within:text-cyan-400 transition-colors">
                 <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
               </div>

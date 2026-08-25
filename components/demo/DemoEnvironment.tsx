@@ -4,14 +4,21 @@ import { useState, useEffect } from "react";
 import PhoneCallScreen from "@/components/demo/PhoneCallScreen";
 import JudgeControlPanel from "@/components/demo/JudgeControlPanel";
 import VerdictCard from "@/components/demo/VerdictCard";
-import { mockVerdicts } from "@/lib/mockData";
+import RecommendedActionsPanel from "@/components/demo/RecommendedActionsPanel";
+import { mockVerdicts, mockCallContexts, calculateRiskTier } from "@/lib/mockData";
 
 export default function DemoEnvironment() {
   const [selectedId, setSelectedId] = useState<string>("1");
+  const [selectedContextId, setSelectedContextId] = useState<string>("routine");
   const [status, setStatus] = useState<"idle" | "analyzing" | "complete">("idle");
   const [callTime, setCallTime] = useState(0);
 
   const selectedVerdict = mockVerdicts.find((v) => v.id === selectedId) || mockVerdicts[0];
+  
+  // Compute risk tier for Recommended Actions Panel
+  const context = mockCallContexts.find(c => c.id === selectedContextId) || mockCallContexts[0];
+  const rawRiskScore = selectedVerdict ? (selectedVerdict.label === "cloned" ? selectedVerdict.confidence : 100 - selectedVerdict.confidence) : 0;
+  const riskTier = calculateRiskTier(rawRiskScore, context);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -49,16 +56,31 @@ export default function DemoEnvironment() {
         <JudgeControlPanel
           verdicts={mockVerdicts}
           selectedId={selectedId}
+          selectedContextId={selectedContextId}
           onSelect={(id) => {
             setSelectedId(id);
             setStatus("idle");
             setCallTime(0);
           }}
+          onSelectContext={(contextId) => {
+            setSelectedContextId(contextId);
+          }}
           onPlay={handlePlay}
           isPlaying={status === "analyzing" || status === "complete"}
         />
 
-        <VerdictCard status={status} verdict={selectedVerdict} />
+        <VerdictCard 
+          status={status} 
+          verdict={selectedVerdict} 
+          contextId={selectedContextId} 
+        />
+
+        {status === "complete" && (
+          <RecommendedActionsPanel 
+            riskTier={riskTier}
+            verdict={selectedVerdict}
+          />
+        )}
       </div>
     </div>
   );

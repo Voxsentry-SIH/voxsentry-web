@@ -16,6 +16,7 @@ const navLinks: NavLink[] = [
   { href: "/download", label: "Download" },
   { href: "/demo", label: "Live Demo" },
   { href: "/train-voice", label: "Train Voice" },
+  { href: "/enterprise-api", label: "Enterprise" },
 ];
 
 export default function Navbar() {
