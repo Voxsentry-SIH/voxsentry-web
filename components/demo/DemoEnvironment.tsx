@@ -64,11 +64,23 @@ export default function DemoEnvironment() {
     setError(null);
     setLiveVerdictResult(null);
 
-    // If using mock data fallback and not a custom file
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" && selectedId !== "custom") {
+    // If using mock data fallback (for hosted demo without a live backend)
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true") {
       setTimeout(() => {
+        if (selectedId === "custom") {
+          // Mock a random verdict for the custom uploaded file
+          const isCloned = Math.random() > 0.5;
+          setLiveVerdictResult({
+            id: "custom",
+            label: isCloned ? "cloned" : "real",
+            confidence: isCloned ? 85 + Math.random() * 14 : 90 + Math.random() * 9,
+            scenarioName: customVerdictOption?.scenarioName || "Custom Upload", 
+            audioFile: customVerdictOption?.audioFile || "",
+            recommendedAction: isCloned ? "High risk detected. Hang up immediately." : "Low risk. Proceed with caution.",
+          });
+        }
         setStatus("complete");
-      }, 2500);
+      }, 800);
       return;
     }
 
@@ -106,8 +118,7 @@ export default function DemoEnvironment() {
       
       setLiveVerdictResult({
         id: selectedId,
-        label: result.verdict, // "spoof" mapped to "cloned" in UI if needed, wait backend returns "spoof" or "bonafide"
-        // Map backend verdict terminology to frontend
+        label: result.verdict, // "spoof" mapped to "cloned" in UI if needed
         confidence: result.confidence,
         scenarioName: mockSelectedVerdict.scenarioName, 
         audioFile: mockSelectedVerdict.audioFile,
@@ -136,6 +147,7 @@ export default function DemoEnvironment() {
           isPlaying={status !== "idle"}
           callerName={displayVerdict.scenarioName}
           callTimeSeconds={callTime}
+          audioUrl={displayVerdict.audioFile}
         />
       </div>
 

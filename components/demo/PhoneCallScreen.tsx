@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { User, PhoneOff, MicOff, Volume2 } from "lucide-react";
+import { User, PhoneOff, MicOff, Volume2, VolumeX } from "lucide-react";
 import gsap from "gsap";
 import { useIsVisible } from "@/hooks/useIsVisible";
 
@@ -9,10 +9,12 @@ export default function PhoneCallScreen({
   isPlaying,
   callerName,
   callTimeSeconds,
+  audioUrl,
 }: {
   isPlaying: boolean;
   callerName: string;
   callTimeSeconds: number;
+  audioUrl?: string;
 }) {
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60)
@@ -26,6 +28,43 @@ export default function PhoneCallScreen({
   const waveformRef = useRef<HTMLDivElement>(null);
   const isVisible = useIsVisible(containerRef, "100px");
   const [animation, setAnimation] = useState<gsap.core.Tween | null>(null);
+
+  // Audio playback state
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isSpeakerOn, setIsSpeakerOn] = useState(false);
+
+  // Stop audio if the call simulation stops
+  useEffect(() => {
+    if (!isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      setIsSpeakerOn(false);
+    }
+  }, [isPlaying]);
+
+  const toggleSpeaker = () => {
+    if (!audioUrl) return;
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => setIsSpeakerOn(false);
+    } else if (audioRef.current.src !== audioUrl) {
+      // Handle source change if scenario changes
+      audioRef.current.pause();
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => setIsSpeakerOn(false);
+    }
+
+    if (isSpeakerOn) {
+      audioRef.current.pause();
+      setIsSpeakerOn(false);
+    } else {
+      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
+      setIsSpeakerOn(true);
+    }
+  };
 
   useEffect(() => {
     if (!waveformRef.current) return;
@@ -113,8 +152,13 @@ export default function PhoneCallScreen({
             </button>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-800 text-white transition-colors hover:bg-gray-700">
-              <Volume2 className="h-6 w-6" />
+            <button 
+              className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${isSpeakerOn ? 'bg-cyan-500 text-white shadow-[0_0_15px_rgba(34,211,238,0.4)]' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
+              onClick={toggleSpeaker}
+              disabled={!audioUrl}
+              title={audioUrl ? (isSpeakerOn ? "Mute speaker" : "Listen to audio") : "No audio available"}
+            >
+              {isSpeakerOn ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
             </button>
           </div>
           <div className="flex flex-col items-center gap-2">
