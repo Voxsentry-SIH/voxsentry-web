@@ -9,7 +9,7 @@ import gsap from "gsap";
 
 const SpectrogramView = dynamic(() => import("./SpectrogramView"), {
   ssr: false,
-  loading: () => <div className="h-40 w-full rounded-xl border border-white/5 bg-[#050510]" />
+  loading: () => <div className="h-full w-full rounded-xl border border-white/5 bg-[#050510]" />
 });
 
 const tierColors: Record<RiskTier, string> = {

@@ -5,7 +5,7 @@ import PhoneCallScreen from "@/components/demo/PhoneCallScreen";
 import JudgeControlPanel from "@/components/demo/JudgeControlPanel";
 import VerdictCard from "@/components/demo/VerdictCard";
 import RecommendedActionsPanel from "@/components/demo/RecommendedActionsPanel";
-import { mockVerdicts, mockCallContexts, calculateRiskTier } from "@/lib/mockData";
+import { mockVerdicts, mockCallContexts, calculateRiskTier, MockVerdict } from "@/lib/mockData";
 
 export default function DemoEnvironment() {
   const [selectedId, setSelectedId] = useState<string>("1");
@@ -14,8 +14,12 @@ export default function DemoEnvironment() {
   const [callTime, setCallTime] = useState(0);
   const [liveVerdictResult, setLiveVerdictResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  const [customFile, setCustomFile] = useState<File | null>(null);
+  const [customVerdictOption, setCustomVerdictOption] = useState<MockVerdict | null>(null);
 
-  const mockSelectedVerdict = mockVerdicts.find((v) => v.id === selectedId) || mockVerdicts[0];
+  const availableVerdicts = customVerdictOption ? [...mockVerdicts, customVerdictOption] : mockVerdicts;
+  const mockSelectedVerdict = availableVerdicts.find((v) => v.id === selectedId) || mockVerdicts[0];
   
   // Use live result if available for this selection, otherwise fallback to mock for display
   const activeVerdict = (liveVerdictResult && liveVerdictResult.id === selectedId) 
@@ -37,14 +41,31 @@ export default function DemoEnvironment() {
     return () => clearInterval(interval);
   }, [status]);
 
+  const handleUpload = (file: File) => {
+    const url = URL.createObjectURL(file);
+    setCustomFile(file);
+    setCustomVerdictOption({
+      id: "custom",
+      label: "real", // default until analyzed
+      confidence: 0,
+      scenarioName: `Custom Upload (${file.name})`,
+      audioFile: url,
+      recommendedAction: "Analysis required.",
+    });
+    setSelectedId("custom");
+    setStatus("idle");
+    setLiveVerdictResult(null);
+    setError(null);
+  };
+
   const handlePlay = async () => {
     setStatus("analyzing");
     setCallTime(0);
     setError(null);
     setLiveVerdictResult(null);
 
-    // If using mock data fallback
-    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true") {
+    // If using mock data fallback and not a custom file
+    if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true" && selectedId !== "custom") {
       setTimeout(() => {
         setStatus("complete");
       }, 2500);
@@ -52,15 +73,24 @@ export default function DemoEnvironment() {
     }
 
     try {
-      // 1. Fetch the audio blob from the public folder
-      const audioUrl = mockSelectedVerdict.audioFile;
-      const fileResponse = await fetch(audioUrl);
-      if (!fileResponse.ok) throw new Error("Failed to load audio sample");
-      const audioBlob = await fileResponse.blob();
+      let audioBlob: Blob;
+      let filename = "audio.wav";
+      
+      if (selectedId === "custom" && customFile) {
+        audioBlob = customFile;
+        filename = customFile.name;
+      } else {
+        // 1. Fetch the audio blob from the public folder
+        const audioUrl = mockSelectedVerdict.audioFile;
+        const fileResponse = await fetch(audioUrl);
+        if (!fileResponse.ok) throw new Error("Failed to load audio sample");
+        audioBlob = await fileResponse.blob();
+        filename = audioUrl.split("/").pop() || "audio.wav";
+      }
 
       // 2. Create FormData
       const formData = new FormData();
-      formData.append("file", audioBlob, audioUrl.split("/").pop());
+      formData.append("file", audioBlob, filename);
 
       // 3. POST to /api/analyze
       const apiResponse = await fetch("/api/analyze", {
@@ -81,7 +111,7 @@ export default function DemoEnvironment() {
         confidence: result.confidence,
         scenarioName: mockSelectedVerdict.scenarioName, 
         audioFile: mockSelectedVerdict.audioFile,
-        recommendedAction: mockSelectedVerdict.recommendedAction
+        recommendedAction: result.verdict === "spoof" ? "High risk detected. Hang up immediately." : "Low risk. Proceed with caution.",
       });
       
       setStatus("complete");
@@ -112,7 +142,7 @@ export default function DemoEnvironment() {
       {/* Right Column: Controls and Verdict */}
       <div className="space-y-6 lg:col-span-8 reveal-up">
         <JudgeControlPanel
-          verdicts={mockVerdicts}
+          verdicts={availableVerdicts}
           selectedId={selectedId}
           selectedContextId={selectedContextId}
           onSelect={(id) => {
@@ -125,6 +155,7 @@ export default function DemoEnvironment() {
             setSelectedContextId(contextId);
           }}
           onPlay={handlePlay}
+          onUpload={handleUpload}
           isPlaying={status === "analyzing"}
         />
 

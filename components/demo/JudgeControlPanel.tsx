@@ -1,7 +1,8 @@
 "use client";
 
-import { Play, UploadCloud } from "lucide-react";
+import { Play, UploadCloud, Mic, Square } from "lucide-react";
 import { MockVerdict } from "@/lib/mockData";
+import { useRef, useState } from "react";
 
 import { mockCallContexts } from "@/lib/mockData";
 
@@ -12,6 +13,7 @@ export default function JudgeControlPanel({
   onSelect,
   onSelectContext,
   onPlay,
+  onUpload,
   isPlaying,
 }: {
   verdicts: MockVerdict[];
@@ -20,8 +22,65 @@ export default function JudgeControlPanel({
   onSelect: (id: string) => void;
   onSelectContext: (id: string) => void;
   onPlay: () => void;
+  onUpload?: (file: File) => void;
   isPlaying: boolean;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Microphone recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      if (onUpload) {
+        onUpload(e.target.files[0]);
+      }
+      // Reset input so the same file can be uploaded again if needed
+      e.target.value = "";
+    }
+  };
+
+  const toggleRecording = async () => {
+    if (isRecording) {
+      // Stop recording
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.stop();
+        mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      }
+      setIsRecording(false);
+    } else {
+      // Start recording
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          const file = new File([audioBlob], "mic-recording.webm", { type: "audio/webm" });
+          if (onUpload) {
+            onUpload(file);
+          }
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+      } catch (err) {
+        console.error("Microphone access denied or error:", err);
+        alert("Microphone access is required to record audio.");
+      }
+    }
+  };
+
   return (
     <div className="glass-card rounded-2xl p-6 shadow-lg h-full flex flex-col justify-between">
       <div>
@@ -37,11 +96,11 @@ export default function JudgeControlPanel({
                 className="w-full appearance-none rounded-xl border border-white/10 bg-[#050514]/60 px-4 py-3.5 text-sm text-white focus:border-cyan-400 focus:outline-none focus:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 value={selectedId}
                 onChange={(e) => onSelect(e.target.value)}
-                disabled={isPlaying}
+                disabled={isPlaying || isRecording}
               >
                 {verdicts.map((v) => (
                   <option key={v.id} value={v.id} className="bg-[#111827]">
-                    {v.scenarioName} ({v.label === "real" ? "Real Voice" : "Cloned Voice"})
+                    {v.scenarioName} {v.id !== "custom" && `(${v.label === "real" ? "Real Voice" : "Cloned Voice"})`}
                   </option>
                 ))}
               </select>
@@ -61,7 +120,7 @@ export default function JudgeControlPanel({
                 className="w-full appearance-none rounded-xl border border-white/10 bg-[#050514]/60 px-4 py-3.5 text-sm text-white focus:border-cyan-400 focus:outline-none focus:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 value={selectedContextId}
                 onChange={(e) => onSelectContext(e.target.value)}
-                disabled={isPlaying}
+                disabled={isPlaying || isRecording}
               >
                 {mockCallContexts.map((ctx) => (
                   <option key={ctx.id} value={ctx.id} className="bg-[#111827]">
@@ -77,23 +136,43 @@ export default function JudgeControlPanel({
         </div>
       </div>
 
-      <div className="mt-8 flex gap-4">
+      <div className="mt-8 flex gap-3">
         <button
-          className={`${isPlaying ? "btn-outline opacity-70 cursor-not-allowed" : "btn-primary"} flex flex-1 items-center justify-center gap-3 py-4 text-sm`}
+          className={`${isPlaying ? "btn-outline opacity-70 cursor-not-allowed" : "btn-primary"} flex flex-1 items-center justify-center gap-2 py-4 text-sm`}
           onClick={onPlay}
-          disabled={isPlaying}
+          disabled={isPlaying || isRecording}
         >
           <Play className="h-5 w-5 fill-current" />
-          {isPlaying ? "Simulating Call..." : "Play Scenario"}
+          {isPlaying ? "Simulating..." : "Play"}
         </button>
 
         <button
-          className="btn-outline flex items-center justify-center px-4 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`${isRecording ? "bg-red-500/10 border-red-500/50 text-red-500 animate-pulse hover:bg-red-500/20" : "btn-outline"} flex items-center justify-center px-4 py-4 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border rounded-xl`}
           disabled={isPlaying}
+          onClick={toggleRecording}
+          title="Record from microphone"
         >
-          <UploadCloud className="h-5 w-5" />
-          <span className="sr-only sm:not-sr-only sm:ml-2 text-sm">Upload</span>
+          {isRecording ? <Square className="h-5 w-5 fill-current" /> : <Mic className="h-5 w-5" />}
         </button>
+
+        <div className="relative">
+          <input 
+            type="file" 
+            accept="audio/*" 
+            className="hidden" 
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            disabled={isPlaying || isRecording}
+          />
+          <button
+            className="btn-outline flex h-full items-center justify-center px-4 py-4 disabled:opacity-50 disabled:cursor-not-allowed border rounded-xl"
+            disabled={isPlaying || isRecording}
+            onClick={() => fileInputRef.current?.click()}
+            title="Upload audio file"
+          >
+            <UploadCloud className="h-5 w-5" />
+          </button>
+        </div>
       </div>
     </div>
   );

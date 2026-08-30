@@ -60,7 +60,7 @@ function SpectrogramMesh({ isAnalyzing, isComplete }: { isAnalyzing: boolean; is
 
 export default function SpectrogramView({ isAnalyzing, isComplete }: { isAnalyzing: boolean; isComplete: boolean }) {
   return (
-    <div className="relative flex h-40 w-full items-end overflow-hidden rounded-xl border border-[rgba(34,211,238,0.2)] bg-[#050510] shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]">
+    <div className="relative flex h-full w-full items-end overflow-hidden rounded-xl border border-[rgba(34,211,238,0.2)] bg-[#050510] shadow-[inset_0_0_20px_rgba(34,211,238,0.05)]">
       
       {/* 3D WebGL Canvas */}
       <div className="absolute inset-0 z-0">
