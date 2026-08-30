@@ -42,19 +42,27 @@ export default function Soundwave() {
 
   return (
     <div 
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-32 flex items-center gap-2 opacity-30 z-0 pointer-events-none"
+      className="absolute top-[60%] sm:top-[58%] lg:top-[56%] left-1/2 -translate-x-1/2 w-[105%] max-w-[700px] h-28 flex items-center justify-between gap-2 opacity-50 z-10 pointer-events-none"
       ref={containerRef}
     >
-      {Array.from({ length: 40 }).map((_, i) => (
-        <div 
-          key={i} 
-          className="w-2 rounded-full"
-          style={{ 
-            height: "20%",
-            background: "linear-gradient(to top, #7C3AED, #22D3EE)"
-          }}
-        />
-      ))}
+      {Array.from({ length: 32 }).map((_, i) => {
+        // Gradient interpolation from cyan (left) to purple (right)
+        const ratio = i / 31;
+        const color = ratio < 0.5 
+          ? "linear-gradient(to top, rgba(6,182,212,0.9), rgba(56,189,248,0.95))"
+          : "linear-gradient(to top, rgba(129,140,248,0.9), rgba(192,132,252,0.95))";
+        
+        return (
+          <div 
+            key={i} 
+            className="w-2 sm:w-2.5 rounded-full flex-1 max-w-[10px] shadow-[0_0_12px_rgba(56,189,248,0.3)]"
+            style={{ 
+              height: "30%",
+              background: color
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

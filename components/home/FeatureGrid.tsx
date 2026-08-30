@@ -1,5 +1,8 @@
+"use client";
+
 import { ShieldCheck, Lock, Activity, Sliders, Code2 } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function FeatureGrid() {
   const features = [
@@ -24,15 +27,19 @@ export default function FeatureGrid() {
   ];
 
   return (
-    <section className="bg-transparent py-16 md:py-24 relative z-10 -mt-10">
+    <section className="bg-transparent py-20 md:py-24 relative z-10">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-6 md:grid-cols-3">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             
             const cardContent = (
-              <div 
-                className="reveal-up glass-card flex flex-row items-center gap-6 p-6 rounded-2xl transition-transform duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:border-cyan-400/30 w-full h-full"
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: idx * 0.15, ease: "easeOut" }}
+                className="glass-card flex flex-row items-center gap-6 p-6 rounded-2xl transition-transform duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:border-cyan-400/30 w-full h-full"
               >
                 <div className="glow-badge h-14 w-14 shrink-0">
                   <Icon className="h-6 w-6 text-cyan-400" />
@@ -45,7 +52,7 @@ export default function FeatureGrid() {
                     {feature.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             );
 
             if (feature.href) {

@@ -1,24 +1,35 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Architecture & Local Development Setup
+
+VoxSentry operates on a **two-server architecture** utilizing a Next.js frontend and a FastAPI backend for Machine Learning inferences. 
+
+To run the application locally, you **must** start both servers.
+
+### 1. Start the FastAPI Backend
+Open your first terminal, navigate to the backend directory, and start the python server:
+```bash
+cd ../voxsentry-backend
+# Activate your virtual environment if you have one
+uvicorn app.main:app --reload --port 8000
+```
+*(The backend will run on `http://localhost:8000`)*
+
+### 2. Start the Next.js Frontend
+Open a second terminal, navigate to this frontend directory, ensure `.env.local` is configured, and start the development server:
+```bash
+cd voxsentry-web
+npm run dev
+```
+*(The frontend will run on `http://localhost:3000`)*
+
+> **Note**: Your `voxsentry-web/.env.local` file must contain `BACKEND_API_URL=http://localhost:8000` for the frontend to proxy requests correctly.
+
+---
+
 ## Getting Started
 
 First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 

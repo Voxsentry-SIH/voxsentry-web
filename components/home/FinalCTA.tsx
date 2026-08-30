@@ -1,11 +1,20 @@
+"use client";
+
 import Link from "next/link";
 import { Play, Mic } from "lucide-react";
+import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 export default function FinalCTA() {
   return (
-    <section className="bg-primary/5 py-24 md:py-32">
-      <div className="mx-auto max-w-4xl px-6 text-center">
+    <section className="bg-primary/5 py-20 md:py-24 lg:py-28">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="mx-auto max-w-4xl px-6 text-center"
+      >
         <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl mb-6">
           See how voice-clone detection works.
         </h2>
@@ -27,7 +36,7 @@ export default function FinalCTA() {
             </button>
           </Link>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,4 +1,7 @@
+"use client";
+
 import { Users, Briefcase, PhoneIncoming, UserMinus } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function UseCases() {
   const cases = [
@@ -25,22 +28,35 @@ export default function UseCases() {
   ];
 
   return (
-    <section className="bg-transparent py-20 md:py-32 relative z-10">
+    <section className="bg-transparent py-20 md:py-24 lg:py-28 relative z-10">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="reveal-up mb-16 md:text-center max-w-3xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-16 md:text-center max-w-3xl mx-auto"
+        >
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-4 drop-shadow-md">
             Built for the moments when trust matters
           </h2>
           <p className="text-lg text-slate-400">
             Voice cloning changes how scams operate. VoxSentry is designed to detect the subtle anomalies that humans miss.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {cases.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="reveal-up glass-card flex flex-col items-start p-6 rounded-2xl">
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
+                className="glass-card flex flex-col items-start p-6 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg"
+              >
                 <div className="mb-6 glow-badge h-12 w-12">
                   <Icon className="h-6 w-6 text-cyan-400" />
                 </div>
@@ -50,7 +66,7 @@ export default function UseCases() {
                 <p className="text-sm leading-relaxed text-slate-400">
                   {item.description}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>

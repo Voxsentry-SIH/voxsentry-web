@@ -10,7 +10,7 @@ export default function RecordingStep({
   onComplete,
   onCancel,
 }: {
-  onComplete: () => void;
+  onComplete: (samples: Blob[]) => void;
   onCancel: () => void;
 }) {
   const [stepIndex, setStepIndex] = useState(0);
@@ -18,6 +18,9 @@ export default function RecordingStep({
   const [hasRecorded, setHasRecorded] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  // Store all recorded blobs
+  const [recordedSamples, setRecordedSamples] = useState<Blob[]>([]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -118,6 +121,14 @@ export default function RecordingStep({
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
+        
+        // Save to our array for this specific step
+        setRecordedSamples(prev => {
+          const newSamples = [...prev];
+          newSamples[stepIndex] = audioBlob;
+          return newSamples;
+        });
+        
         setHasRecorded(true);
         stream.getTracks().forEach((track) => track.stop());
       };
@@ -147,7 +158,7 @@ export default function RecordingStep({
       setHasRecorded(false);
       setAudioUrl(null);
     } else {
-      onComplete();
+      onComplete(recordedSamples);
     }
   };
 

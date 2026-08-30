@@ -1,11 +1,33 @@
+"use client";
+
 import Link from "next/link";
 import { Play, Download, Shield } from "lucide-react";
+import { motion } from "framer-motion";
 
 import HeroGraphics from "./HeroGraphics";
 
 export default function Hero() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+    },
+  };
+
   return (
-    <section className="relative w-full overflow-hidden bg-transparent pt-32 pb-24 min-h-screen flex items-center">
+    <section className="relative w-full overflow-hidden bg-transparent pt-28 md:pt-32 pb-16 lg:pb-24 min-h-[calc(100vh-80px)] flex items-center">
       {/* Background Graphic Elements */}
       <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
         {/* Soft radial glow centered behind the shield/centerpiece */}
@@ -13,24 +35,41 @@ export default function Hero() {
       </div>
 
       <div className="mx-auto max-w-7xl w-full px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Left Column: Copy & CTA */}
-          <div className="flex flex-col items-start max-w-xl relative z-30">
-            <div className="reveal-up inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-1.5 text-sm font-semibold text-cyan-400 mb-8 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+          <motion.div 
+            className="flex flex-col items-start max-w-xl relative z-30"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div 
+              variants={itemVariants}
+              className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-1.5 text-sm font-semibold text-cyan-400 mb-8 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+            >
               <Shield className="h-4 w-4" />
               AI Voice Security
-            </div>
+            </motion.div>
             
-            <h1 className="reveal-up text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-[4.5rem] leading-[1.1] mb-6">
+            <motion.h1 
+              variants={itemVariants}
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6"
+            >
               Stop Voice-Cloning Scams Before They Cost You
-            </h1>
+            </motion.h1>
             
-            <p className="reveal-up text-lg text-slate-300 mb-10 leading-relaxed font-light">
+            <motion.p 
+              variants={itemVariants}
+              className="text-lg text-slate-300 mb-10 leading-relaxed font-light"
+            >
               Detect AI voice scams and deepfake calls in real-time. Protect your conversations, your money, and your identity.
-            </p>
+            </motion.p>
             
-            <div className="reveal-up flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+            >
               <Link href="/download" className="w-full sm:w-auto group">
                 <button className="btn-primary w-full flex items-center justify-center gap-2 h-14 px-8 text-base">
                   <Download className="h-5 w-5" />
@@ -43,11 +82,18 @@ export default function Hero() {
                   Try Live Demo
                 </button>
               </Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* Right Column: 3D Scene & Floating GSAP Elements */}
-          <HeroGraphics />
+          {/* Right Column: Graphics */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] flex items-center justify-center mt-8 lg:mt-0"
+          >
+            <HeroGraphics />
+          </motion.div>
         </div>
       </div>
     </section>

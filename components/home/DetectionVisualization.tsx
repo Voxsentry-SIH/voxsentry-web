@@ -1,22 +1,37 @@
+"use client";
+
 import { CheckCircle2, AlertTriangle, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 import VoiceAnalysisAnimation from "./how-it-works/VoiceAnalysisAnimation";
 import SecurityVerdictAnimation from "./how-it-works/SecurityVerdictAnimation";
 
 export default function DetectionVisualization() {
   return (
-    <section className="bg-background-alt py-20 md:py-32">
+    <section className="bg-background-alt py-20 md:py-24 lg:py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-16 text-center max-w-3xl mx-auto"
+        >
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
             From audio signal to security decision
           </h2>
           <p className="text-lg text-muted">
             Our detection engine turns raw audio into actionable security intelligence.
           </p>
-        </div>
+        </motion.div>
 
         {/* Large Dashboard-style Visual */}
-        <div className="rounded-2xl border border-border bg-background p-6 md:p-10 shadow-xl overflow-hidden relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+          className="rounded-2xl border border-border bg-background p-6 md:p-10 shadow-xl overflow-hidden relative"
+        >
           
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
             
@@ -105,7 +120,7 @@ export default function DetectionVisualization() {
             </div>
           </div>
           
-        </div>
+        </motion.div>
       </div>
     </section>
   );

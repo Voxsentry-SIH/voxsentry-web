@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import { PerformanceProvider } from "@/providers/PerformanceProvider";
+import Particles from "@/components/ui/Particles";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,6 +27,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col font-sans">
+        <div className="fixed inset-0 z-[-1] pointer-events-none">
+          <Particles
+            particleColors={["#ffffff", "#6366f1", "#8b5cf6", "#06b6d4"]}
+            particleCount={150}
+            particleSpread={10}
+            speed={0.05}
+            particleBaseSize={80}
+            moveParticlesOnHover={true}
+            alphaParticles={true}
+            disableRotation={false}
+          />
+        </div>
         <PerformanceProvider>
           <ScrollReveal />
           <Navbar />

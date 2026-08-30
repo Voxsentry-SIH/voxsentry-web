@@ -12,21 +12,61 @@ const steps = [
   "Saving to your voice library...",
 ];
 
-export default function ProcessingStep({ onComplete }: { onComplete: () => void }) {
+export default function ProcessingStep({ samples, onComplete }: { samples: Blob[], onComplete: () => void }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
     const runSteps = async () => {
-      for (let i = 0; i < steps.length; i++) {
-        setCurrentStepIndex(i);
-        // Wait between 1.5s and 2.5s for each step
-        await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));
+      try {
+        if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === "true") {
+          // Mock behavior
+          for (let i = 0; i < steps.length; i++) {
+            setCurrentStepIndex(i);
+            await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000));
+          }
+          setCurrentStepIndex(steps.length);
+          timeout = setTimeout(onComplete, 1000);
+          return;
+        }
+
+        const userId = localStorage.getItem("voxsentry_auth") || "guest";
+        const profileName = "Myself"; // In a full app, prompt for this
+
+        // 1. Uploading
+        setCurrentStepIndex(0);
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        formData.append("profile_name", profileName);
+        samples.forEach((blob, idx) => {
+          formData.append("files", blob, `sample_${idx}.wav`);
+        });
+
+        // 2 & 3. Wait for backend to extract embeddings
+        setCurrentStepIndex(1); // Jump to extracting in UI
+        const response = await fetch("/api/enroll", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("Enrollment service unavailable.");
+        }
+
+        // 4. Saved
+        setCurrentStepIndex(3);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        
+        setCurrentStepIndex(steps.length);
+        timeout = setTimeout(onComplete, 1000);
+
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || "Failed to process voice profile.");
       }
-      setCurrentStepIndex(steps.length);
-      timeout = setTimeout(onComplete, 1000);
     };
 
     runSteps();
@@ -34,13 +74,13 @@ export default function ProcessingStep({ onComplete }: { onComplete: () => void 
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [onComplete]);
+  }, [onComplete, samples]);
 
   useEffect(() => {
     if (!backgroundRef.current) return;
     
-    // Only animate the background intensely during extraction (step 2)
-    const isExtracting = currentStepIndex === 2;
+    // Animate intensely during the API request
+    const isExtracting = currentStepIndex === 1 || currentStepIndex === 2;
     
     const ctx = gsap.context(() => {
       if (isExtracting) {
@@ -77,53 +117,68 @@ export default function ProcessingStep({ onComplete }: { onComplete: () => void 
       </div>
 
       <div className="glass-card p-8 sm:p-12 rounded-3xl shadow-2xl">
-        <div className="space-y-8">
-          {steps.map((step, idx) => {
-            const isCompleted = currentStepIndex > idx;
-            const isCurrent = currentStepIndex === idx;
-            const isPending = currentStepIndex < idx;
+        {error ? (
+          <div className="flex flex-col items-center justify-center text-center">
+            <div className="mb-4 rounded-full bg-red-500/10 p-4 border border-red-500/30">
+              <span className="text-red-400 font-bold text-xl">X</span>
+            </div>
+            <p className="text-red-400 font-semibold mb-6">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="btn-outline px-6 py-2 text-sm text-slate-300"
+            >
+              Start Over
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {steps.map((step, idx) => {
+              const isCompleted = currentStepIndex > idx;
+              const isCurrent = currentStepIndex === idx;
+              const isPending = currentStepIndex < idx;
 
-            return (
-               <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: isPending ? 0.3 : 1, x: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="flex items-center gap-5"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center">
-                  {isCompleted ? (
-                    <motion.div 
-                      initial={{ scale: 0, rotate: -90 }} 
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="glow-badge rounded-full"
-                    >
-                      <CheckCircle2 className="h-7 w-7 text-cyan-400" />
-                    </motion.div>
-                  ) : isCurrent ? (
-                    <div className="h-8 w-8 rounded-full border border-cyan-400/30 bg-cyan-400/10 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)]">
-                      <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
-                    </div>
-                  ) : (
-                    <div className="h-3 w-3 rounded-full bg-white/20" />
-                  )}
-                </div>
-                <span
-                  className={`text-lg ${
-                    isCurrent
-                      ? "font-semibold text-white drop-shadow-md"
-                      : isCompleted
-                      ? "text-slate-300"
-                      : "text-slate-600"
-                  }`}
+              return (
+                 <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: isPending ? 0.3 : 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="flex items-center gap-5"
                 >
-                  {step}
-                </span>
-              </motion.div>
-            );
-          })}
-        </div>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                    {isCompleted ? (
+                      <motion.div 
+                        initial={{ scale: 0, rotate: -90 }} 
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="glow-badge rounded-full"
+                      >
+                        <CheckCircle2 className="h-7 w-7 text-cyan-400" />
+                      </motion.div>
+                    ) : isCurrent ? (
+                      <div className="h-8 w-8 rounded-full border border-cyan-400/30 bg-cyan-400/10 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                        <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+                      </div>
+                    ) : (
+                      <div className="h-3 w-3 rounded-full bg-white/20" />
+                    )}
+                  </div>
+                  <span
+                    className={`text-lg ${
+                      isCurrent
+                        ? "font-semibold text-white drop-shadow-md"
+                        : isCompleted
+                        ? "text-slate-300"
+                        : "text-slate-600"
+                    }`}
+                  >
+                    {step}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
 
-/**
- * POST /api/analyze
- * Proxy route — forwards requests to the FastAPI ML backend.
- */
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     
     const backendUrl = process.env.BACKEND_API_URL || "http://localhost:8000";
     
-    // The FastAPI backend mounted this under /api prefix
-    const response = await fetch(`${backendUrl}/api/analyze`, {
+    const response = await fetch(`${backendUrl}/api/verify`, {
       method: "POST",
       body: formData,
     });
@@ -27,7 +22,7 @@ export async function POST(request: Request) {
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error: any) {
-    console.error("Analyze Proxy Error:", error);
+    console.error("Verify Proxy Error:", error);
     return NextResponse.json(
       { error: "Failed to connect to backend service", details: error.message },
       { status: 503 }

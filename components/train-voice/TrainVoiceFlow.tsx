@@ -10,6 +10,7 @@ type FlowState = "library" | "consent" | "recording" | "processing";
 
 export default function TrainVoiceFlow() {
   const [currentStep, setCurrentStep] = useState<FlowState>("library");
+  const [recordedSamples, setRecordedSamples] = useState<Blob[]>([]);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -25,12 +26,15 @@ export default function TrainVoiceFlow() {
       case "recording":
         return (
           <RecordingStep
-            onComplete={() => setCurrentStep("processing")}
+            onComplete={(samples) => {
+              setRecordedSamples(samples);
+              setCurrentStep("processing");
+            }}
             onCancel={() => setCurrentStep("library")}
           />
         );
       case "processing":
-        return <ProcessingStep onComplete={() => setCurrentStep("library")} />;
+        return <ProcessingStep samples={recordedSamples} onComplete={() => setCurrentStep("library")} />;
     }
   };
 

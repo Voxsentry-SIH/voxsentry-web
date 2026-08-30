@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Mic, AudioWaveform, BrainCircuit, Fingerprint, ShieldAlert } from "lucide-react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -55,42 +52,8 @@ const cards = [
 ];
 
 export default function HowItWorks() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Only register ScrollTrigger on client side
-    gsap.registerPlugin(ScrollTrigger);
-    
-    if (!gridRef.current) return;
-    const elements = gridRef.current.children;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        elements,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%", // Trigger when top of section hits 75% of viewport height
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    }, gridRef);
-
-    return () => {
-      ctx.revert();
-    };
-  }, []);
-
   return (
-    <section ref={sectionRef} className="relative w-full bg-[#050514] py-32 overflow-hidden">
+    <section className="relative w-full bg-[#050514] py-20 md:py-24 lg:py-28 overflow-hidden">
       {/* Subtle Circuit/Grid Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -100,24 +63,33 @@ export default function HowItWorks() {
       />
       
       <div className="mx-auto max-w-7xl px-6 relative z-10">
-        <div className="text-center mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center mb-20"
+        >
           <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
             How VoxSentry Works
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
             Our pipeline analyzes audio in milliseconds without leaving your device.
           </p>
-        </div>
+        </motion.div>
 
-        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {cards.map((card, idx) => {
             if (card.id === "center-canvas") {
               return (
                 <motion.div 
                   key="center"
-                  className="glass-card rounded-2xl flex flex-col h-[320px] overflow-hidden lg:order-none order-first"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, delay: idx * 0.1, ease: "easeOut" }}
                   whileHover={{ scale: 1.02, y: -5 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="glass-card rounded-2xl flex flex-col h-[320px] overflow-hidden lg:order-none order-first"
                 >
                   {/* macOS style window header */}
                   <div className="h-10 border-b border-cyan-400/10 bg-white/5 flex items-center px-4 gap-2 shrink-0">
@@ -139,9 +111,12 @@ export default function HowItWorks() {
             return (
               <motion.div 
                 key={idx} 
-                className="glass-card rounded-2xl p-8 flex flex-col justify-start h-full"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: idx * 0.1, ease: "easeOut" }}
                 whileHover={{ scale: 1.02, y: -5 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="glass-card rounded-2xl p-8 flex flex-col justify-start h-full"
               >
                 <div className="glow-badge h-14 w-14 mb-6">
                   <Icon className="h-6 w-6 text-cyan-400" />
