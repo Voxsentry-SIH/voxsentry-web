@@ -11,18 +11,18 @@
 !.yarn/versions
 
 # testing
-/coverage
+# /coverage
 
 # next.js
 /.next/
 /out/
 
 # production
-/build
+# /build
 
-# misc
-.DS_Store
-*.pem
+# # misc
+# .DS_Store
+# *.pem
 
 # debug
 npm-debug.log*
@@ -37,5 +37,5 @@ yarn-error.log*
 .vercel
 
 # typescript
-*.tsbuildinfo
-next-env.d.ts
+# *.tsbuildinfo
+# next-env.d.ts
