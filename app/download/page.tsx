@@ -21,9 +21,9 @@ export default function DownloadPage() {
             Download the latest version of the VoxSentry app to protect yourself from synthetic voice scams in real-time.
           </p>
           <div className="mt-10 flex justify-center">
-            <a href="/voxsentry-v1.0.1.apk" download className="btn-primary px-8 py-4 text-lg inline-flex items-center">
+            <a href="/voxsentry-v1.2.apk" download className="btn-primary px-8 py-4 text-lg inline-flex items-center">
               <Download className="h-5 w-5 mr-3" />
-              Download APK (v1.0.1)
+              Download APK (v1.2)
             </a>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function DownloadPage() {
           
           <div className="grid gap-6 md:grid-cols-4">
             {[
-              { title: "Download", desc: "Get the latest APK (v1.0.1) from our secure servers.", icon: Download },
+              { title: "Download", desc: "Get the latest APK (v1.2) from our secure servers.", icon: Download },
               { title: "Install", desc: "Open the downloaded file and install the app.", icon: Smartphone },
               { title: "Permissions", desc: 'Grant "Draw over other apps" for the overlay.', icon: Settings },
               { title: "Protected", desc: "You are now protected against AI voice clones.", icon: ShieldCheck },
