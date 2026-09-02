@@ -21,10 +21,10 @@ export default function DownloadPage() {
             Download the latest version of the VoxSentry app to protect yourself from synthetic voice scams in real-time.
           </p>
           <div className="mt-10 flex justify-center">
-            <button className="btn-primary px-8 py-4 text-lg">
+            <a href="/voxsentry.apk" download className="btn-primary px-8 py-4 text-lg inline-flex items-center justify-center">
               <Download className="h-5 w-5 mr-3" />
               Download APK (v1.0.0)
-            </button>
+            </a>
           </div>
         </div>
       </section>
