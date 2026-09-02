@@ -19,6 +19,9 @@ export default function DemoPage() {
           <p className="mt-3 max-w-2xl text-slate-400">
             Experience how VoxSentry analyzes incoming audio in real-time. Select a scenario and press play to simulate a phone call.
           </p>
+          <p className="mt-4 max-w-2xl border-l-2 border-amber-400/70 pl-3 text-sm text-amber-200/90">
+            The server may be sleeping. The first demo analysis can take a few minutes while it wakes up. Thank you for your patience. After the first generation, subsequent detection should run smoothly.
+          </p>
         </div>
 
         <DemoEnvironment />
