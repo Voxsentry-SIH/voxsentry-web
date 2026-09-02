@@ -9,7 +9,7 @@
 Built for **Smart India Hackathon 2026** · Problem Statement **SIH26104**
 *"AI-Powered Real-Time Detection and Prevention of Voice Cloning Impersonation Attacks"*
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-voxsentry--web.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://voxsentry-web.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-voxsentry.vineetm1204.xyz-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://voxsentry.vineetm1204.xyz)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -35,7 +35,7 @@ Built for **Smart India Hackathon 2026** · Problem Statement **SIH26104**
 <br/>
 
 > [!TIP]
-> **Judges / evaluators:** click **[Try Live Demo](https://voxsentry-web.vercel.app)** → **Guest / Judge Mode** to jump straight into the Dialer Demo with no signup. See [Success Criteria](#-what-a-judge-should-experience) for the intended 60-second flow.
+> **Judges / evaluators:** click **[Try Live Demo](https://voxsentry.vineetm1204.xyz)** → **Guest / Judge Mode** to jump straight into the Dialer Demo with no signup. See [Success Criteria](#-what-a-judge-should-experience) for the intended 60-second flow.
 
 ---
 
@@ -86,7 +86,7 @@ The full VoxSentry system has three parts, working together:
 
 <div align="center">
 
-**[🔗 voxsentry-web.vercel.app](https://voxsentry-web.vercel.app)**
+**[🔗 voxsentry.vineetm1204.xyz](https://voxsentry.vineetm1204.xyz)**
 
 </div>
 
@@ -375,14 +375,6 @@ Deeper project docs live in the repo root:
 | [`RULES.md`](./RULES.md) | Project conventions and constraints |
 
 ---
-
-## 📄 License
-
-*Add a license for this project (e.g. MIT) — see [choosealicense.com](https://choosealicense.com/) for guidance.*
-
-<div align="center">
-
-<br/>
 
 **[⬆ back to top](#️-voxsentry)**
 
