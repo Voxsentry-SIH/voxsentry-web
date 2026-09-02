@@ -49,8 +49,8 @@ export default function DetectionVisualization() {
                     <span className="text-primary font-mono">16kHz</span>
                   </div>
                   <div className="flex items-center gap-[2px] h-8">
-                    {Array.from({ length: 40 }).map((_, i) => (
-                      <div key={i} className="flex-1 bg-primary/40 rounded-full" style={{ height: `${20 + Math.random() * 80}%` }} />
+                    {[45, 82, 34, 67, 91, 23, 76, 54, 88, 32, 65, 43, 78, 29, 94, 51, 87, 39, 72, 61, 48, 83, 36, 92, 27, 75, 41, 68, 85, 31, 79, 56, 95, 24, 81, 47, 73, 38, 89, 52].map((h, i) => (
+                      <div key={i} className="flex-1 bg-primary/40 rounded-full" style={{ height: `${h}%` }} />
                     ))}
                   </div>
                 </div>
